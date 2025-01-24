@@ -1,0 +1,93 @@
+--- /etc/sway/config	2025-01-12 02:22:27.486952950 +0530
++++ .config/sway/config	2025-01-24 13:33:21.406255826 +0530
+@@ -18,12 +18,22 @@
+ # Your preferred application launcher
+ # Note: pass the final command to swaymsg so that the resulting window can be opened
+ # on the original workspace that the command was run on.
+-set $menu dmenu_path | wmenu | xargs swaymsg exec --
++set $menu wmenu-run | xargs swaymsg exec --
++
++#sets HOME to home directory
++set $HOME ${HOME}
++#write 1 to start_sway_count file
++exec echo 1 > $HOME/.start_sway_count
++#execute pipewire sound server
++exec gentoo-pipewire-launcher restart &
++#change backlight when started
++exec backlight_adj 10 -s
+ 
+ ### Output configuration
+ #
+ # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
+-output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
++output * bg $HOME/Pictures/forest fill scale 2
++
+ #
+ # Example configuration:
+ #
+@@ -64,9 +74,10 @@
+ #
+     # Start a terminal
+     bindsym $mod+Return exec $term
++	bindsym $mod+t exec $term	
+ 
+     # Kill focused window
+-    bindsym $mod+Shift+q kill
++    bindsym $mod+q kill
+ 
+     # Start your launcher
+     bindsym $mod+d exec $menu
+@@ -82,7 +93,7 @@
+     bindsym $mod+Shift+c reload
+ 
+     # Exit sway (logs you out of your Wayland session)
+-    bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
++    bindsym $mod+Shift+e exec swaymsg exit
+ #
+ # Moving around:
+ #
+@@ -204,9 +215,8 @@
+     position top
+ 
+     # When the status_command prints a new line to stdout, swaybar updates.
+-    # The default just shows the current date and time.
+-    status_command while date +'%Y-%m-%d %X'; do sleep 1; done
+-
++    # shows the battery percentage | date and time
++    status_command while echo "$(sound_percent) \| $(battery_status) \| $(date +'%Y-%m-%d %X')";do sleep 1; done
+     colors {
+         statusline #ffffff
+         background #323232
+@@ -214,4 +224,32 @@
+     }
+ }
+ 
++#shortcuts
++#firefox
++bindsym alt+b exec firefox-bin & disown
++#vscode
++bindsym alt+c exec vscodium & disown
++
++#brightness
++bindsym XF86MonBrightnessDown exec backlight_adj -2
++bindsym XF86MonBrightnessUp exec backlight_adj 2
++#sound
++bindsym XF86AudioMute exec wpctl set-mute @DEFAULT_SINK@ toggle
++bindsym XF86AudioRaiseVolume exec wpctl set-volume @DEFAULT_SINK@ 5%+ -l 1
++bindsym XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_SINK@ 5%-
++
++#show if a window is using xwayland
++for_window [shell="xwayland"] title_format "[XWayland] %title"
++
++#open legacy launcher (minecraft launcher) in floating mode
++for_window [class="ru-turikhay-tlauncher-bootstrap-Bootstrap"] floating enable
++
++#screenshot
++bindsym print exec env GRIM_DEFAULT_DIR="$HOME/Pictures/screenshots" bash -c 'selection=$(slurp);grim -g "$selection" && grim -g "$selection" - | wl-copy'
++
++#tap to click
++input type:touchpad {
++	tap enabled
++}
++
+ include /etc/sway/config.d/*
