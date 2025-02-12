@@ -1,3 +1,4 @@
+Modifications to the stock configuration of sway window manager on linux
 ## [in start]
 - sets brightness to 10% using custom script tht writes to value to /sys/class/../brightness file
 - write 1 to a control file (.start_sway_config) in home directory
