@@ -1,14 +1,16 @@
 --- /etc/sway/config	2025-01-12 02:22:27.486952950 +0530
-+++ .config/sway/config	2025-01-24 13:33:21.406255826 +0530
-@@ -18,12 +18,22 @@
++++ .config/sway/config	2025-02-09 00:43:32.160553565 +0530
+@@ -18,12 +18,24 @@
  # Your preferred application launcher
  # Note: pass the final command to swaymsg so that the resulting window can be opened
  # on the original workspace that the command was run on.
 -set $menu dmenu_path | wmenu | xargs swaymsg exec --
-+set $menu wmenu-run | xargs swaymsg exec --
++set $menu wmenu-run
++set $menu2 wofi --show drun
 +
 +#sets HOME to home directory
 +set $HOME ${HOME}
++
 +#write 1 to start_sway_count file
 +exec echo 1 > $HOME/.start_sway_count
 +#execute pipewire sound server
@@ -20,12 +22,12 @@
  #
  # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
 -output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
-+output * bg $HOME/Pictures/forest fill scale 2
++output * bg $HOME/Pictures/forest fill scale 1
 +
  #
  # Example configuration:
  #
-@@ -64,9 +74,10 @@
+@@ -64,12 +76,14 @@
  #
      # Start a terminal
      bindsym $mod+Return exec $term
@@ -37,7 +39,11 @@
  
      # Start your launcher
      bindsym $mod+d exec $menu
-@@ -82,7 +93,7 @@
++	bindsym $mod+g exec $menu2
+ 
+     # Drag floating windows by holding down $mod and left mouse button.
+     # Resize them with right mouse button + $mod.
+@@ -82,7 +96,7 @@
      bindsym $mod+Shift+c reload
  
      # Exit sway (logs you out of your Wayland session)
@@ -46,7 +52,7 @@
  #
  # Moving around:
  #
-@@ -204,9 +215,8 @@
+@@ -204,9 +218,8 @@
      position top
  
      # When the status_command prints a new line to stdout, swaybar updates.
@@ -58,7 +64,7 @@
      colors {
          statusline #ffffff
          background #323232
-@@ -214,4 +224,32 @@
+@@ -214,4 +227,33 @@
      }
  }
  
@@ -83,11 +89,12 @@
 +for_window [class="ru-turikhay-tlauncher-bootstrap-Bootstrap"] floating enable
 +
 +#screenshot
-+bindsym print exec env GRIM_DEFAULT_DIR="$HOME/Pictures/screenshots" bash -c 'selection=$(slurp);grim -g "$selection" && grim -g "$selection" - | wl-copy'
++bindsym print exec env GRIM_DEFAULT_DIR="$HOME/pictures/screenshots" bash -c 'selection=$(slurp);grim -g "$selection" && grim -g "$selection" - | wl-copy'
 +
 +#tap to click
 +input type:touchpad {
 +	tap enabled
++	dwt disabled
 +}
 +
  include /etc/sway/config.d/*
